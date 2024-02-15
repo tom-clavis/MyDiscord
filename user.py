@@ -1,3 +1,5 @@
+import sqlite3
+
 class User:
     def __init__(self, first_name, last_name, email, password):
         self.first_name = first_name
@@ -6,7 +8,7 @@ class User:
         self.password = password
 
     def login(self, email, password):
-        connection = sqlite3.connect('myDiscord.sql')
+        connection = sqlite3.connect('MyDiscord.sql')
         cursor = connection.cursor()
         cursor.execute('SELECT * FROM User WHERE email=? AND password=?', (email, password))
         user = cursor.fetchone()
@@ -22,10 +24,10 @@ class User:
         connection.close()
 
     def logout(self):
-        # Déconnexion de l'utilisateur
+        
         pass
 
     def has_permission(self, channel_id):
-        # Vérifier si l'utilisateur a les droits pour accéder au canal
+        
         pass
 
