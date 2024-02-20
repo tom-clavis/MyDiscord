@@ -1,6 +1,8 @@
 import mysql.connector
-import bcrypt
-class Connection:
+import os
+
+mdp = os.getenv("mdp")
+class ConnectionBD:
     def __init__(self, host, user, password, database):
         self.host = host
         self.user = user
@@ -16,11 +18,13 @@ class Connection:
         )
         self.cursor = self.connection.cursor()
 
+    def disconnect(self):
+        self.connection.close()
 
-    def authenticate_user(self, email, password):
-        user = self.read_user(email)
-        if user:
-            hashed_password = user[4]
-            if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
-                return user
-        return None
+if __name__ == "__main__":
+    host = 'localhost'
+    user = 'root'
+    password = mdp
+    database = 'MyDiscord'
+
+

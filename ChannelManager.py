@@ -1,26 +1,9 @@
 import mysql.connector
 import os
-from Connection import Connection
+from ConnectionBD import ConnectionBD
 mdp = os.getenv("mdp")
 
-class ChannelManager(Connection):
-    def __init__(self, host, user, password, database):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-
-    def connect(self):
-        self.connection = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database
-        )
-        self.cursor = self.connection.cursor()
-
-    def disconnect(self):
-        self.connection.close()
+class ChannelManager(ConnectionBD):
 
     def create_channel(self, name):
         self.connect()

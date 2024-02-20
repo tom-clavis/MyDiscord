@@ -60,7 +60,7 @@ if __name__ == "__main__":
 
     message_manager = Message(host, user, password, database)
     # Lecture du message
-    message = message_manager.read_message(2)
+    message = message_manager.read_message(8)
     print("Message trouvé :", message)
     message_manager.delete_message(2)
   
