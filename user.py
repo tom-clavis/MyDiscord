@@ -24,13 +24,11 @@ class User:
         self.connection.close()
 
     def create_user(self, first_name, last_name, email, password, id_user):
-        # Vérifier si l'utilisateur existe déjà avec cet e-mail
         existing_user = self.read_user(email)
         if existing_user:
-            print("L'utilisateur avec cet e-mail existe déjà.")
             return
         self.connect()
-        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
         sql = "INSERT INTO user (first_name, last_name, email, password, id_user) VALUES (%s, %s, %s, %s, %s)"
         val = (first_name, last_name, email, hashed_password, id_user)
         self.cursor.execute(sql, val)
@@ -43,15 +41,18 @@ class User:
         self.cursor.execute(sql, (email,))
         user = self.cursor.fetchone()
         self.disconnect()
-        return user
+        if user:
+            return user
+        else:
+            return None
     
-    def read_users(self):
-        self.connect()
-        sql = "SELECT * FROM user"
-        self.cursor.execute(sql)
-        users = self.cursor.fetchone()
-        self.disconnect()
-        return users
+    def authenticate_user(self, email, password):
+        user = self.read_user(email)
+        if user:
+            hashed_password = user[4]
+            if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
+                return user
+        return None
 
     def update_user_password(self, new_mail, new_password, email):
         self.connect()
@@ -68,22 +69,23 @@ class User:
         self.connection.commit()
         self.disconnect()
 
-
 if __name__ == "__main__":
     host = 'localhost'
     user = 'root'
     password = mdp
     database = 'MyDiscord'
 
-    user_manager = User(host, user, password, database)
-    user_manager.create_user("john", "Doe", "john@example.com", "456", 1)
-    # création user
-    user_manager.update_user_password("test@example.com", "123", "john@example.com" )
-    # voir les données de l'user
-    user = user_manager.read_user("test@example.com")
-    print("Utilisateur trouvé :", user) 
-    users = user_manager.read_users()
-    print(" La liste de tout les utilisateurs :", users) 
+    user_manager = User(host, user, password, database)  
+    user_manager.create_user("john", "doe", "john@example.com", "456", 1)
+    # Authentification de l'utilisateur
+    email = "john@example.com"
+    password = "456"
+    authenticated_user = user_manager.authenticate_user(email, password)
+    if authenticated_user:
+        print("Connexion réussie pour l'utilisateur :", authenticated_user)
+    else:
+        print("Email ou mot de passe incorrect.")
+
 
     
     
