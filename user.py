@@ -69,6 +69,21 @@ class User:
         self.connection.commit()
         self.disconnect()
 
+    def send_message(self, email, password, content):
+        authenticated_user = self.authenticate_user(email, password)
+        if authenticated_user:
+            user_id = authenticated_user[0]  # Récupérer l'ID de l'utilisateur authentifié
+            self.connect()
+            sql = "INSERT INTO message (content, author_id) VALUES (%s, %s)"
+            val = (content, user_id)
+            self.cursor.execute(sql, val)
+            self.connection.commit()
+            self.disconnect()
+            print("Message envoyé avec succès.")
+        else:
+            print("Impossible d'envoyer le message. Authentification invalide.")
+
+
 if __name__ == "__main__":
     host = 'localhost'
     user = 'root'
@@ -85,6 +100,8 @@ if __name__ == "__main__":
         print("Connexion réussie pour l'utilisateur :", authenticated_user)
     else:
         print("Email ou mot de passe incorrect.")
+
+    user_manager.send_message("john@example.com","456","teeeeeeeeeeeeeeest")
 
 
     
