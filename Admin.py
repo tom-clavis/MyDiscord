@@ -25,8 +25,7 @@ class Admin():
         self.user_manager.cursor.execute(sql, val)
         self.user_manager.connection.commit()
         self.user_manager.disconnect()
-        
-        
+             
 if __name__ == "__main__":
     host = 'localhost'
     user = 'root'
