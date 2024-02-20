@@ -1,24 +1,10 @@
 import mysql.connector
 import os
 import bcrypt
-
+from Connection import Connection
 mdp = os.getenv("mdp")
 
-class User:
-    def __init__(self, host, user, password, database):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-
-    def connect(self):
-        self.connection = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database
-        )
-        self.cursor = self.connection.cursor()
+class User(Connection):
 
     def disconnect(self):
         self.connection.close()
@@ -45,27 +31,12 @@ class User:
             return user
         else:
             return None
-    
-    def authenticate_user(self, email, password):
-        user = self.read_user(email)
-        if user:
-            hashed_password = user[4]
-            if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
-                return user
-        return None
-
+   
     def update_user_password(self, new_mail, new_password, email):
         self.connect()
         hashed_password = bcrypt.hashpw(new_password.encode(), bcrypt.gensalt())
         sql = "UPDATE user SET email = %s, password = %s WHERE email = %s"
         self.cursor.execute(sql, (new_mail, hashed_password, email))
-        self.connection.commit()
-        self.disconnect()
-
-    def delete_user_by_email(self, email):
-        self.connect()
-        sql = "DELETE FROM user WHERE email = %s"
-        self.cursor.execute(sql, (email,))
         self.connection.commit()
         self.disconnect()
 
