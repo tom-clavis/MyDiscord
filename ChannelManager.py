@@ -59,16 +59,11 @@ if __name__ == "__main__":
     database = 'MyDiscord'
 
     channel_manager = ChannelManager(host, user, password, database)
-
     # Création d'un canal
     channel_manager.create_channel("general")
-
     # Lecture du canal
     channel = channel_manager.read_channel(1)
     print("Canal trouvé :", channel)
-
     # Mise à jour du nom du canal
     channel_manager.update_channel_name(1, "general-discussion")
-
-    # Suppression du canal
-    channel_manager.delete_channel(1)
+ 
