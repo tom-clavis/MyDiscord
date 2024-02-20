@@ -2,7 +2,6 @@ import os
 from UserManager import UserManager
 
 mdp = os.getenv("mdp")
-
 class User:
     def __init__(self, user_manager):
         self.user_manager = user_manager
@@ -16,7 +15,7 @@ class User:
             val = (content, user_id)
             self.user_manager.cursor.execute(sql, val)
             self.user_manager.connection.commit()
-            self.disconnect()
+            self.user_manager.disconnect()
             print("Message envoyé avec succès.")
         else:
             print("Impossible d'envoyer le message. Authentification invalide.")
@@ -40,7 +39,7 @@ if __name__ == "__main__":
         print("Email ou mot de passe incorrect.")
 
     user_instance = User(user_manager)
-    user_instance.send_message("john@example.com", "456", "teeeeeeeeeeeeeeest")
+    user_instance.send_message("john@example.com", "456", "vero va encore boire")
 
     
 
