@@ -21,6 +21,7 @@ class UserManager(ConnectionBD):
         user = self.read_user(email)
         if user:
             hashed_password = user[4]
+            
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
                 return user
         return None
@@ -31,6 +32,5 @@ if __name__ == "__main__":
     password = mdp
     database = 'MyDiscord'
     user_manager = UserManager(host, user, password, database)
-
     user = user_manager.read_user("john@example.com")
-    print(user)
+

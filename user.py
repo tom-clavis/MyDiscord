@@ -2,6 +2,7 @@ import os
 from UserManager import UserManager
 
 mdp = os.getenv("mdp")
+
 class User:
     def __init__(self, user_manager):
         self.user_manager = user_manager
@@ -29,8 +30,8 @@ if __name__ == "__main__":
     user_manager = UserManager(host, user, password, database)  
 
     # Authentification de l'utilisateur
-    email = "john@example.com"
-    password = "456"
+    email = "bobo@example.com"
+    password = "111"
     
     authenticated_user = user_manager.authenticate_user(email, password)
     if authenticated_user:
@@ -39,7 +40,7 @@ if __name__ == "__main__":
         print("Email ou mot de passe incorrect.")
 
     user_instance = User(user_manager)
-    user_instance.send_message("john@example.com", "456", "vero va encore boire")
+    user_instance.send_message("bobo@example.com", "111", "hahahaha")
 
     
 

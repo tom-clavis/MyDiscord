@@ -4,20 +4,19 @@ from ConnectionBD import ConnectionBD
 mdp = os.getenv("mdp")
 
 class ChannelManager(ConnectionBD):
-
-    def create_channel(self, name):
+    def create_channel(self, name, type):
         self.connect()
-        sql = "INSERT INTO channel (name) VALUES (%s)"
-        val = (name,)
+        sql = "INSERT INTO channel (name, type) VALUES (%s, %s)"
+        val = (name, type)
         self.cursor.execute(sql, val)
         self.connection.commit()
         self.disconnect()
 
-    def read_channel(self, channel_id):
+    def read_channel(self):
         self.connect()
-        sql = "SELECT * FROM channel WHERE id = %s"
-        self.cursor.execute(sql, (channel_id,))
-        channel = self.cursor.fetchone()
+        sql = "SELECT * FROM channel "
+        self.cursor.execute(sql)
+        channel = self.cursor.fetchall()
         self.disconnect()
         return channel
 
@@ -42,11 +41,11 @@ if __name__ == "__main__":
     database = 'MyDiscord'
 
     channel_manager = ChannelManager(host, user, password, database)
-    # Création d'un canal
-    channel_manager.create_channel("general")
     # Lecture du canal
-    channel = channel_manager.read_channel(1)
+    channel = channel_manager.read_channel()
     print("Canal trouvé :", channel)
-    # Mise à jour du nom du canal
-    channel_manager.update_channel_name(1, "general-discussion")
+
+
+  
+
  

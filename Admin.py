@@ -3,7 +3,7 @@ import bcrypt
 from UserManager import UserManager
 
 mdp = os.getenv("mdp")
-class Admin():
+class Admin:
     def __init__(self, user_manager):
         self.user_manager = user_manager
         
@@ -35,7 +35,8 @@ if __name__ == "__main__":
 
     gerer_user = Admin(user_manager)
     gerer_user.create_user("bibi", "titi", "bobo@example.com", "111", 2)
-    gerer_user.delete_user_by_email("bobo@example.com")
+    
+    
 
     
 
