@@ -9,7 +9,7 @@ class LoginMenu:
         custom_font = ("Arial Black", 11)
 
         # Changer la couleur de fond de la fenêtre
-        self.master.config(bg="slateblue4")  # Changez "lightblue" par la couleur de votre choix
+        self.master.config(bg="slateblue4")  
 
 
         # Éléments d'interface avec la police personnalisée
