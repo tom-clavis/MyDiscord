@@ -1,4 +1,5 @@
 import tkinter as tk
+from tkinter import messagebox
 
 class RegisterMenu:
     def __init__(self, master):
@@ -29,12 +30,14 @@ class RegisterMenu:
         self.master.geometry("400x350")
 
     def register(self):
-        # Logique d'inscription
+        
         username = self.entry_username.get()
         email = self.entry_email.get()
         password = self.entry_password.get()
-        # Ajoutez ici la logique pour enregistrer les nouvelles informations dans la base de données
+        
         print("Inscription réussie pour l'utilisateur:", username, "avec l'adresse e-mail:", email)
+        messagebox.showinfo("Succès", "Inscription réussie pour l'utilisateur: {}\navec l'adresse e-mail: {}".format(username, email))
+        self.master.destroy()  # Ferme la fenêtre d'inscription
 
 if __name__ == "__main__":
     root = tk.Tk()
