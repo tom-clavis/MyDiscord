@@ -31,7 +31,7 @@ class LoginMenu:
         self.button_register.pack(pady=10)
 
          # Ajouter le logo en bas de la page
-        self.logo_image = tk.PhotoImage(file="logo3.png")  
+        self.logo_image = tk.PhotoImage(file="Images/logo3.png")  
         self.logo_label = tk.Label(self.master, image=self.logo_image, bg="slateblue4") 
         self.logo_label.pack(side=tk.BOTTOM, pady=10)
 
