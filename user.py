@@ -54,3 +54,8 @@ if __name__ == "__main__":
 
     user_instance = User(user_manager)
     user_instance.send_message("bobo@example.com", "111", "hahahaha")
+
+    # Création d'un nouvel utilisateur
+    new_email = "nouveau@example.com"
+    new_password = "123456"
+    user_instance.create_user(new_email, new_password)
