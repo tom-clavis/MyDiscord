@@ -41,7 +41,7 @@ if __name__ == "__main__":
     database = 'MyDiscord'
 
     channel_manager = ChannelManager(host, user, password, database)
-    # Lecture du canal
+    channel_manager.update_channel_name(3, "General")
     channel = channel_manager.read_channel()
     print("Canal trouvé :", channel)
 
