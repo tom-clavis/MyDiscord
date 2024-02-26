@@ -1,26 +1,10 @@
 import mysql.connector
 import os
+from ConnectionBD import ConnectionBD
 
 mdp = os.getenv("mdp")
 
-class Message:
-    def __init__(self, host, user, password, database):
-        self.host = host
-        self.user = user
-        self.password = password
-        self.database = database
-
-    def connect(self):
-        self.connection = mysql.connector.connect(
-            host=self.host,
-            user=self.user,
-            password=self.password,
-            database=self.database
-        )
-        self.cursor = self.connection.cursor()
-
-    def disconnect(self):
-        self.connection.close()
+class Message(ConnectionBD):
 
     def create_message(self, content, author_id, channel_id):
         self.connect()
@@ -60,7 +44,8 @@ if __name__ == "__main__":
 
     message_manager = Message(host, user, password, database)
     # Lecture du message
-    message = message_manager.read_message(8)
+    message_manager.create_message("test de message", 43, 1 )
+    message = message_manager.read_message(18)
     print("Message trouvé :", message)
     message_manager.delete_message(2)
   

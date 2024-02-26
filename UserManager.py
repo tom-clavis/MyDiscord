@@ -47,7 +47,7 @@ class UserManager(ConnectionBD):
                 return user
         return None
     
-    def update_user(self, id, new_user_id):
+    def update_role_user(self, id, new_user_id):
         authenticated_user = self.authenticate_user("bobo@example.com", "test")
         if authenticated_user:
             user_role = authenticated_user[4]  
@@ -62,7 +62,6 @@ class UserManager(ConnectionBD):
         else:
             print("L'authentification a échoué.")
     
-
         
 if __name__ == "__main__":
     host = 'localhost'
@@ -71,7 +70,7 @@ if __name__ == "__main__":
     database = 'MyDiscord'
 
     user_manager = UserManager(host, user, password, database)
-    user_manager.update_user(3,44)
+    user_manager.update_role_user(3,44)
     read = user_manager.read_user("jojo@example.com")
     print(read)
     
