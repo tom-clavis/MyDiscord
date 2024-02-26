@@ -52,7 +52,7 @@ class ChannelManager(ConnectionBD):
         self.connect()
         sql = "SELECT user.first_name, user.last_name AS channel_member FROM user LEFT JOIN channel_member ON user.id = channel_member.user_id WHERE channel_member.channel_id = %s;"
         self.cursor.execute(sql, (user_id,))
-        user = self.cursor.fetchone()
+        user = self.cursor.fetchall()
         self.disconnect()
         if user:
             return user
