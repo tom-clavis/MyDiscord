@@ -8,18 +8,18 @@ mdp = os.getenv("mdp")
 class UserManager(ConnectionBD):
 
     def create_user(self, first_name, last_name, email, password):
-            existing_user = self.read_user(email)
-            if existing_user:
-                return
-            self.connect()
-            salt = bcrypt.gensalt()
-            print("Salt:", salt)
-            hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
-            sql = "INSERT INTO user (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
-            val = (first_name, last_name, email, hashed_password)
-            self.cursor.execute(sql, val)
-            self.connection.commit()
-            self.disconnect()
+        existing_user = self.read_user(email)
+        if existing_user:
+            return
+        self.connect()
+        salt = bcrypt.gensalt()
+        print("Salt:", salt)
+        hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
+        sql = "INSERT INTO user (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
+        val = (first_name, last_name, email, hashed_password)
+        self.cursor.execute(sql, val)
+        self.connection.commit()
+        self.disconnect()
 
     def read_user(self, email):
         self.connect()
@@ -33,11 +33,11 @@ class UserManager(ConnectionBD):
             return None
         
     def delete_user_by_email(self, email):
-            self.connect()
-            sql = "DELETE FROM user WHERE email = %s"
-            self.cursor.execute(sql, (email,))
-            self.connection.commit()
-            self.disconnect()
+        self.connect()
+        sql = "DELETE FROM user WHERE email = %s"
+        self.cursor.execute(sql, (email,))
+        self.connection.commit()
+        self.disconnect()
         
     def authenticate_user(self, email, password):
         user = self.read_user(email)
@@ -70,8 +70,9 @@ if __name__ == "__main__":
     database = 'MyDiscord'
 
     user_manager = UserManager(host, user, password, database)
-    user_manager.update_role_user(3,44)
     read = user_manager.read_user("jojo@example.com")
     print(read)
+
+
     
 
