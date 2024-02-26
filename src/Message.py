@@ -22,13 +22,6 @@ class Message(ConnectionBD):
         self.disconnect()
         return message
 
-    def update_message_content(self, message_id, new_content):
-        self.connect()
-        sql = "UPDATE message SET content = %s WHERE id = %s"
-        self.cursor.execute(sql, (new_content, message_id))
-        self.connection.commit()
-        self.disconnect()
-
     def delete_message(self, message_id):
         self.connect()
         sql = "DELETE FROM message WHERE id = %s"
