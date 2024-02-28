@@ -26,6 +26,19 @@ class UserManager(ConnectionBD):
                 return user
         return None
         
+        
+    def connect(self):
+        # Establish connection to the database
+        self.connection = mysql.connect(host=self.host, user=self.user, password=self.password, database=self.database)
+        self.cursor = self.connection.cursor()
+
+    def register_user(self, username, email, password):
+        # Insert user information into the database
+        sql = "INSERT INTO users (username, email, password) VALUES (%s, %s, %s)"
+        val = (username, email, password)
+        self.cursor.execute(sql, val)
+        self.connection.commit()
+        
 if __name__ == "__main__":
     host = 'localhost'
     user = 'root'

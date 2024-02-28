@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import messagebox
+import requests
 
 class RegisterMenu:
     def __init__(self, master):
@@ -35,9 +36,16 @@ class RegisterMenu:
         email = self.entry_email.get()
         password = self.entry_password.get()
         
-        print("Inscription réussie pour l'utilisateur:", username, "avec l'adresse e-mail:", email)
-        messagebox.showinfo("Succès", "Inscription réussie pour l'utilisateur: {}\navec l'adresse e-mail: {}".format(username, email))
-        self.master.destroy()  # Ferme la fenêtre d'inscription
+        # Sending user information to backend for registration
+        response = requests.post('http://backend-url/register', json={'username': username, 'email': email, 'password': password})
+        
+        if response.status_code == 200:
+            print("Inscription réussie pour l'utilisateur:", username, "avec l'adresse e-mail:", email)
+            messagebox.showinfo("Succès", "Inscription réussie pour l'utilisateur: {}\navec l'adresse e-mail: {}".format(username, email))
+            self.master.destroy()  # Ferme la fenêtre d'inscription
+        else:
+            print("Erreur lors de l'inscription.")
+            messagebox.showerror("Erreur", "Erreur lors de l'inscription. Veuillez réessayer plus tard.")
 
 if __name__ == "__main__":
     root = tk.Tk()
