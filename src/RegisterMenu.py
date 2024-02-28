@@ -38,7 +38,7 @@ class RegisterMenu:
         self.entry_password.pack(pady=10)
         self.button_register.pack(pady=10)
 
-        self.master.geometry("400x350")
+        self.master.geometry("400x450")
         
         # Instanciez UserManager
         self.user_manager = UserManager(host="localhost", user="root", password=mdp, database="MyDiscord")
