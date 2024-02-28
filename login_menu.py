@@ -12,23 +12,27 @@ class LoginMenu:
 
         self.master.config(bg="slateblue4")
 
-        self.label_username = tk.Label(master, text="Nom d'utilisateur", font=custom_font)
+        self.label_usermail = tk.Label(master, text="Adresse mail", font=custom_font)
         self.label_password = tk.Label(master, text="Mot de passe", font=custom_font)
 
-        self.entry_username = tk.Entry(master, font=custom_font)
+        self.entry_usermail = tk.Entry(master, font=custom_font)
         self.entry_password = tk.Entry(master, show="*", font=custom_font)
 
         self.button_login = tk.Button(master, text="Connexion", command=self.login, font=custom_font)
         self.button_register = tk.Button(master, text="Inscription", command=self.open_register_menu, font=custom_font)
 
-        self.label_username.pack(pady=10)
-        self.entry_username.pack(pady=10)
+        self.label_usermail.pack(pady=10)
+        self.entry_usermail.pack(pady=10)
         self.label_password.pack(pady=10)
         self.entry_password.pack(pady=10)
         self.button_login.pack(pady=10)
         self.button_register.pack(pady=10)
 
         self.master.geometry("600x450")
+
+        self.logo_image = tk.PhotoImage(file="Images/logo3.png")  # Assurez-vous que l'extension est correcte (par exemple, .png)
+        self.logo_label = tk.Label(self.master, image=self.logo_image, bg="slateblue4")  # Changez "lightblue" par la couleur de votre choix
+        self.logo_label.pack(side=tk.BOTTOM, pady=10)
 
     def login(self):
         # Logique de connexion
