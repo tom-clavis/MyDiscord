@@ -68,7 +68,6 @@ if __name__ == "__main__":
     user = 'root'
     password = mdp
     database = 'MyDiscord'
-
     user_manager = UserManager(host, user, password, database)
     read = user_manager.read_user("jojo@example.com")
     print(read)

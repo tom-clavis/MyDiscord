@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     message_manager = Message(host, user, password, database)
     # Lecture du message
-    message_manager.create_message("test de message", 43, 1 )
+    message_manager.create_message("j'envoie un message", 43, 1 )
     message = message_manager.read_message(18)
     print("Message trouvé :", message)
     message_manager.delete_message(2)
