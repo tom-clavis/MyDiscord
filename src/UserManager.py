@@ -62,7 +62,6 @@ class UserManager(ConnectionBD):
         else:
             print("L'authentification a échoué.")
     
-        
 if __name__ == "__main__":
     host = 'localhost'
     user = 'root'

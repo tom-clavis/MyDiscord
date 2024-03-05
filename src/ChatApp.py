@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import scrolledtext
 import os
 from Message import Message
+
 class ChatApp:
     def __init__(self, master, user_id, channel_id):
         self.master = master
@@ -24,6 +25,10 @@ class ChatApp:
         self.message_list = scrolledtext.ScrolledText(master, wrap=tk.WORD, state=tk.DISABLED)
         self.message_list.pack(expand=True, fill="both")
 
+        # Zone de texte déroulante pour afficher les utilisateurs sur le canal
+        self.user_list = scrolledtext.ScrolledText(master, wrap=tk.WORD, state=tk.DISABLED)
+        self.user_list.pack(expand=True, fill="both")
+
         # Entrée pour taper un nouveau message
         self.message_entry = tk.Entry(master, width=50)
         self.message_entry.pack(pady=10)
@@ -34,6 +39,8 @@ class ChatApp:
 
         # Afficher les messages initiaux
         self.display_messages()
+        # Afficher les utilisateurs sur le canal
+        self.display_users()
 
     def get_author_name(self, author_id):
         self.message_manager.connect()
@@ -47,6 +54,24 @@ class ChatApp:
         # Déconnexion de la base de données
         self.message_manager.disconnect()
         return author_name
+
+    def get_users_in_channel(self):
+        self.message_manager.connect()
+        sql = "SELECT DISTINCT author_id FROM message WHERE channel_id = %s"
+        self.message_manager.cursor.execute(sql, (self.channel_id,))
+        rows = self.message_manager.cursor.fetchall()
+        user_ids = [row[0] for row in rows]
+        user_names = [self.get_author_name(user_id) for user_id in user_ids if user_id]
+        self.message_manager.disconnect()
+        return user_names
+
+    def display_users(self):
+        users = self.get_users_in_channel()
+        self.user_list.config(state=tk.NORMAL)
+        self.user_list.delete(1.0, tk.END)  # Effacer le contenu actuel
+        for user in users:
+            self.user_list.insert(tk.END, f"{user}\n")
+        self.user_list.config(state=tk.DISABLED)
 
     def load_messages(self):
         messages = []
@@ -89,12 +114,14 @@ class ChatApp:
         # Actualiser les messages affichés
         self.messages = self.load_messages()
         self.display_messages()
+        # Actualiser la liste des utilisateurs sur le canal
+        self.display_users()
         self.message_entry.delete(0, tk.END)  # Effacer le champ de saisie après l'envoi
 
 if __name__ == "__main__":
     # Exemple d'utilisation de ChatApp avec ID utilisateur et ID de canal
     root = tk.Tk()
-    user_id = 43  # ID de l'utilisateur connecté
+    user_id = 49  # ID de l'utilisateur connecté
     channel_id = 1  # ID du canal auquel l'utilisateur est connecté
     chat_app = ChatApp(root, user_id, channel_id)
     root.mainloop()
