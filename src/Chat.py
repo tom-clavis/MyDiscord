@@ -2,7 +2,6 @@ import tkinter as tk
 from tkinter import scrolledtext
 import os
 from Message import Message
-
 class ChatApp:
     def __init__(self, master, user_id, channel_id):
         self.master = master
@@ -47,7 +46,6 @@ class ChatApp:
 
         # Déconnexion de la base de données
         self.message_manager.disconnect()
-
         return author_name
 
     def load_messages(self):
