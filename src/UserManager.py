@@ -13,7 +13,6 @@ class UserManager(ConnectionBD):
             return
         self.connect()
         salt = bcrypt.gensalt()
-        print("Salt:", salt)
         hashed_password = bcrypt.hashpw(password.encode('utf-8'), salt)
         sql = "INSERT INTO user (first_name, last_name, email, password) VALUES (%s, %s, %s, %s)"
         val = (first_name, last_name, email, hashed_password)
@@ -68,6 +67,5 @@ if __name__ == "__main__":
     password = mdp
     database = 'MyDiscord'
     user_manager = UserManager(host, user, password, database)
-    user_data = user_manager.read_user("jojo@example.com")
-    print(user_data)
+    
 

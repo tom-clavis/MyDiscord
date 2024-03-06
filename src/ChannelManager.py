@@ -37,11 +37,11 @@ class ChannelManager(ConnectionBD):
         # Demander à l'utilisateur de saisir toutes les informations nécessaires pour créer un canal
         channel_name = simpledialog.askstring("Créer un canal", "Nom du canal:")
         if not channel_name:
-            return  # Sortir si l'utilisateur annule la saisie
+            return  
 
         channel_type = simpledialog.askstring("Créer un canal", "Type du canal (textuel/vocal):")
         if not channel_type:
-            return  # Sortir si l'utilisateur annule la saisie
+            return  
 
         channel_type = channel_type.lower()
         if channel_type not in ["textuel", "vocal"]:
@@ -50,7 +50,7 @@ class ChannelManager(ConnectionBD):
 
         channel_visibility = simpledialog.askstring("Créer un canal", "Visibilité du canal (public/private):")
         if not channel_visibility:
-            return  # Sortir si l'utilisateur annule la saisie
+            return  
 
         channel_visibility = channel_visibility.lower()
         if channel_visibility not in ["public", "private"]:
@@ -72,7 +72,6 @@ class ChannelManager(ConnectionBD):
         except Exception as e:
             messagebox.showerror("Erreur", f"Erreur lors de la création du canal : {str(e)}")
 
-
     def refresh_channels(self):
         for child in self.master.winfo_children():
             if isinstance(child, ttk.Treeview):
@@ -91,7 +90,7 @@ class ChannelManager(ConnectionBD):
             else:
                 password = simpledialog.askstring("Connexion au canal", "Entrez le mot de passe du canal:", show='*')
                 if password is None:
-                    return  # Sortir si l'utilisateur annule la saisie
+                    return  
                 # Vérifier si le mot de passe est correct
                 if not self.verify_password(channel_id, password):
                     messagebox.showerror("Erreur", "Mot de passe incorrect.")
@@ -108,7 +107,6 @@ class ChannelManager(ConnectionBD):
         self.disconnect()
         # Comparer le mot de passe entré par l'utilisateur avec le mot de passe stocké dans la base de données
         return password == correct_password
-
 
     def read_channel(self):
         self.connect()

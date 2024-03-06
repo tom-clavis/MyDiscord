@@ -114,7 +114,6 @@ class ChatApp:
     def delete_user(self, user_id):
         self.message_manager.connect()
         sql = "DELETE FROM channel_member WHERE channel_id = %s AND user_id = %s"
-        print("supprimé : ", user_id)
         self.message_manager.cursor.execute(sql, (self.channel_id, user_id))
         self.message_manager.connection.commit()
         self.message_manager.disconnect()
