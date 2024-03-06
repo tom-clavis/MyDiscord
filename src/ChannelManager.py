@@ -85,13 +85,17 @@ class ChannelManager(ConnectionBD):
         channel_visibility = event.widget.item(item, "values")[3]
         
         if channel_visibility == "private":
-            password = simpledialog.askstring("Connexion au canal", "Entrez le mot de passe du canal:", show='*')
-            if password is None:
-                return  # Sortir si l'utilisateur annule la saisie
-            # Vérifier si le mot de passe est correct
-            if not self.verify_password(channel_id, password):
-                messagebox.showerror("Erreur", "Mot de passe incorrect.")
-                return
+            if self.role == "admin":
+                chat_root = tk.Toplevel(self.master)
+                chat_app = ChatApp(chat_root, self.user_id, channel_id, role=self.role)
+            else:
+                password = simpledialog.askstring("Connexion au canal", "Entrez le mot de passe du canal:", show='*')
+                if password is None:
+                    return  # Sortir si l'utilisateur annule la saisie
+                # Vérifier si le mot de passe est correct
+                if not self.verify_password(channel_id, password):
+                    messagebox.showerror("Erreur", "Mot de passe incorrect.")
+                    return
 
         chat_root = tk.Toplevel(self.master)
         chat_app = ChatApp(chat_root, self.user_id, channel_id, role=self.role)
