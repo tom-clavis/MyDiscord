@@ -10,7 +10,6 @@ class ChatApp:
         self.user_id = user_id  # ID de l'utilisateur connecté
         self.channel_id = channel_id  # ID du canal auquel l'utilisateur est connecté
         self.role = role
-        print (self.role)
         self.master.title("Discord-like Chat")
         self.master.geometry("600x400")
 
@@ -45,7 +44,6 @@ class ChatApp:
 
         # Afficher les messages initiaux
         self.display_messages()
-
 
         # Initialisation de la liste des boutons de suppression des utilisateurs
         self.delete_user_buttons = []
@@ -113,24 +111,15 @@ class ChatApp:
 
         self.user_list.config(state=tk.DISABLED)
 
-
-
-
     def delete_user(self, user_id):
-        # Connexion à la base de données
         self.message_manager.connect()
-        # Supprimer l'utilisateur du canal dans la base de données
         sql = "DELETE FROM channel_member WHERE channel_id = %s AND user_id = %s"
         print("supprimé : ", user_id)
         self.message_manager.cursor.execute(sql, (self.channel_id, user_id))
-        # Valider et enregistrer les modifications
         self.message_manager.connection.commit()
-        # Déconnexion de la base de données
         self.message_manager.disconnect()
         # Actualiser l'affichage des utilisateurs
         self.display_users()
-
-
 
     def load_messages(self):
         messages = []
@@ -168,8 +157,8 @@ class ChatApp:
         self.message_list.config(state=tk.DISABLED)
 
     def send_message(self):
-        content = self.message_entry.get()  # Contenu du message saisi par l'utilisateur
-        author_id = int(self.user_id)  # Convertir l'ID d'utilisateur en entier
+        content = self.message_entry.get()
+        author_id = int(self.user_id)
         self.message_manager.create_message(content, author_id, self.channel_id)
         # Actualiser les messages affichés
         self.messages = self.load_messages()
@@ -178,10 +167,10 @@ class ChatApp:
 
 
 if __name__ == "__main__":
-    # Exemple d'utilisation de ChatApp avec ID utilisateur et ID de canal
     root = tk.Tk()
     user_id = 43  # ID de l'utilisateur connecté
     channel_id = 1  # ID du canal auquel l'utilisateur est connecté
     
     chat_app = ChatApp(root, user_id, channel_id)
-    root.mainloop()
+    if chat_app.enter_private_channel():  # Vérifier l'accès au canal privé
+        root.mainloop()

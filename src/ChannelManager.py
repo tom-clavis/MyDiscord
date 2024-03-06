@@ -1,5 +1,5 @@
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox, simpledialog
 import os
 from ConnectionBD import ConnectionBD
 from ChatApp import ChatApp
@@ -12,36 +12,103 @@ class ChannelManager(ConnectionBD):
         self.master = master
         self.user_id = user_id
         self.role = role
-        print("le role est", self.role)
 
     def show_channels(self):
-        # Utilisez self.master pour référencer la fenêtre principale
         tree = ttk.Treeview(self.master)
-        tree["columns"] = ("Name", "Type", "Channel_type")
+        tree["columns"] = ("Id", "Name", "Type", "Channel_type")
         tree["show"] = "headings"
+        tree.heading("Id", text="Id")
         tree.heading("Name", text="Nom")
         tree.heading("Type", text="Type")
         tree.heading("Channel_type", text="Channel_type")
 
-        # Lire les canaux depuis la base de données
         channels = self.read_channel()
         for channel in channels:
-            tree.insert("", "end", values=(channel[0], channel[1], channel[2]))
+            # Ajout de la valeur channel_type
+            tree.insert("", "end", values=(channel[0], channel[1], channel[2], channel[3]))  
         tree.pack(expand=True, fill="both")
 
-        # Lorsque l'utilisateur sélectionne un canal, affichez les messages et les utilisateurs correspondants
         tree.bind("<Double-1>", self.open_channel)
 
+        create_channel_button = tk.Button(self.master, text="Créer un canal", command=self.create_channel)
+        create_channel_button.pack(pady=10)
+
+    def create_channel(self):
+        # Demander à l'utilisateur de saisir toutes les informations nécessaires pour créer un canal
+        channel_name = simpledialog.askstring("Créer un canal", "Nom du canal:")
+        if not channel_name:
+            return  # Sortir si l'utilisateur annule la saisie
+
+        channel_type = simpledialog.askstring("Créer un canal", "Type du canal (textuel/vocal):")
+        if not channel_type:
+            return  # Sortir si l'utilisateur annule la saisie
+
+        channel_type = channel_type.lower()
+        if channel_type not in ["textuel", "vocal"]:
+            messagebox.showerror("Erreur", "Le type de canal doit être 'textuel' ou 'vocal'.")
+            return
+
+        channel_visibility = simpledialog.askstring("Créer un canal", "Visibilité du canal (public/private):")
+        if not channel_visibility:
+            return  # Sortir si l'utilisateur annule la saisie
+
+        channel_visibility = channel_visibility.lower()
+        if channel_visibility not in ["public", "private"]:
+            messagebox.showerror("Erreur", "La visibilité du canal doit être 'public' ou 'privé'.")
+            return
+
+        password = None
+        if channel_visibility == "private":
+            password = simpledialog.askstring("Créer un canal", "Mot de passe du canal (laissez vide pour aucun mot de passe):", show='*')
+
+        try:
+            self.connect()
+            sql = "INSERT INTO channel (name, type, channel_type, password) VALUES (%s, %s, %s, %s)"
+            self.cursor.execute(sql, (channel_name, channel_type, channel_visibility, password))  # Ajout de la variable password à la requête SQL
+            self.connection.commit()
+            self.disconnect()
+            messagebox.showinfo("Succès", f"Canal '{channel_name}' créé avec succès.")
+            self.refresh_channels()  # Rafraîchir la liste des canaux après la création du canal
+        except Exception as e:
+            messagebox.showerror("Erreur", f"Erreur lors de la création du canal : {str(e)}")
+
+
+    def refresh_channels(self):
+        for child in self.master.winfo_children():
+            if isinstance(child, ttk.Treeview):
+                child.destroy()
+        self.show_channels()
+
     def open_channel(self, event):
-        item = event.widget.selection()[0]  # Obtenir l'élément sélectionné dans l'arbre
-        channel_id = event.widget.item(item, "values")[0]  # Obtenir l'ID du canal sélectionné
-        # Afficher l'application de chat pour le canal sélectionné
+        item = event.widget.selection()[0]
+        channel_id = event.widget.item(item, "values")[0]
+        channel_visibility = event.widget.item(item, "values")[3]
+        
+        if channel_visibility == "private":
+            password = simpledialog.askstring("Connexion au canal", "Entrez le mot de passe du canal:", show='*')
+            if password is None:
+                return  # Sortir si l'utilisateur annule la saisie
+            # Vérifier si le mot de passe est correct
+            if not self.verify_password(channel_id, password):
+                messagebox.showerror("Erreur", "Mot de passe incorrect.")
+                return
+
         chat_root = tk.Toplevel(self.master)
         chat_app = ChatApp(chat_root, self.user_id, channel_id, role=self.role)
 
+    def verify_password(self, channel_id, password):
+        self.connect()
+        sql = "SELECT password FROM channel WHERE id = %s"
+        self.cursor.execute(sql, (channel_id,))
+        correct_password = self.cursor.fetchone()[0]
+        self.disconnect()
+        # Comparer le mot de passe entré par l'utilisateur avec le mot de passe stocké dans la base de données
+        return password == correct_password
+
+
     def read_channel(self):
         self.connect()
-        sql = "SELECT id, name, type FROM channel "  
+        sql = "SELECT id, name, type, channel_type FROM channel"
         self.cursor.execute(sql)
         channels = self.cursor.fetchall()
         self.disconnect()
@@ -56,11 +123,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     root.title("Channel List")
 
-    channel_manager = ChannelManager(root, user_id=1, host=host, user=user, password=password, database=database)
+    channel_manager = ChannelManager(root, user_id=1, role="admin", host=host, user=user, password=password, database=database)
     channel_manager.show_channels()
-
     root.mainloop()
-    
-
-
- 

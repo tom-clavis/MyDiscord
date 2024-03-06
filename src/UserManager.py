@@ -47,14 +47,14 @@ class UserManager(ConnectionBD):
                 return user
         return None
     
-    def update_role_user(self, id, new_user_id):
+    def update_role_user(self, user_id, new_role_id):
         authenticated_user = self.authenticate_user("bobo@example.com", "test")
         if authenticated_user:
             user_role = authenticated_user[4]  
-            if user_role == "admin" or "officier":  
+            if user_role == "admin" or user_role == "officier":  
                 self.connect()
                 sql = "UPDATE user SET id_user = %s WHERE id = %s"
-                self.cursor.execute(sql, (id, new_user_id))
+                self.cursor.execute(sql, (new_role_id, user_id))
                 self.connection.commit()
                 self.disconnect()
             else:
@@ -68,9 +68,6 @@ if __name__ == "__main__":
     password = mdp
     database = 'MyDiscord'
     user_manager = UserManager(host, user, password, database)
-    read = user_manager.read_user("jojo@example.com")
-    print(read)
-
-
-    
+    user_data = user_manager.read_user("jojo@example.com")
+    print(user_data)
 

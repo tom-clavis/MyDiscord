@@ -1,10 +1,8 @@
 import tkinter as tk
 from tkinter import messagebox
+from UserManager import UserManager
 import mysql.connector
 import os
-import bcrypt  # Importez bcrypt pour utiliser ses fonctions de hachage
-from UserManager import UserManager
-
 
 mdp = os.getenv("mdp")
 
@@ -40,7 +38,6 @@ class RegisterMenu:
 
         self.master.geometry("400x450")
         
-        # Instanciez UserManager
         self.user_manager = UserManager(host="localhost", user="root", password=mdp, database="MyDiscord")
 
     def register(self):
@@ -49,39 +46,24 @@ class RegisterMenu:
         email = self.entry_email.get()
         password = self.entry_password.get()
         
-        connection = None  # Initialize connection variable
-        
         try:
-            # Connexion à la base de données
-            connection = mysql.connector.connect(
-                host="localhost",
-                user="root",
-                password=mdp ,
-                database="MyDiscord"
-            )
-            
-            cursor = connection.cursor()
-
-            # Appelez la méthode create_user de UserManager
             self.user_manager.create_user(name, username, email, password)
-            
-            # Fermez la connexion
-            connection.commit()
-            print("Inscription réussie pour l'utilisateur:", username, "avec l'adresse e-mail:", email)
             messagebox.showinfo("Succès", "Inscription réussie pour l'utilisateur: {}\navec l'adresse e-mail: {}".format(username, email))
+            self.clear_entries()
             self.master.destroy()  # Ferme la fenêtre d'inscription
         
         except mysql.connector.Error as error:
             print("Erreur lors de l'insertion dans la base de données:", error)
             messagebox.showerror("Erreur", "Une erreur est survenue lors de l'inscription.")
-        
-        finally:
-            # Fermez la connexion
-            if connection is not None and connection.is_connected():
-                cursor.close()
-                connection.close()
+
+    def clear_entries(self):
+        self.entry_name.delete(0, tk.END)
+        self.entry_username.delete(0, tk.END)
+        self.entry_email.delete(0, tk.END)
+        self.entry_password.delete(0, tk.END)
 
 if __name__ == "__main__":
     root = tk.Tk()
     register_menu = RegisterMenu(root)
     root.mainloop()
+

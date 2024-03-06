@@ -54,10 +54,12 @@ class LoginMenu():
                 messagebox.showerror("Erreur", "Email ou mot de passe invalide")
         except mysql.connector.Error as error:
             print("Erreur lors de la connexion à la base de données:", error)
+            
     def check_session(self):
         if self.user_session:
             root_channel = tk.Tk()
-            channel_menu = ChannelManager(root_channel, user_id=self.user_session.id)
+            channel_manager = ChannelManager(root_channel, host="localhost", user="root", password=mdp, database="MyDiscord", user_id=self.user_session[0], role=self.user_session[5])
+            channel_manager.show_channels()
             root_channel.mainloop()
 
     def open_register_menu(self):
