@@ -63,14 +63,19 @@ class ChatApp:
         return author_name
 
     def add_user_to_channel(self):
-        # Connexion à la base de données
         self.message_manager.connect()
-        # Insérer l'utilisateur dans la table channel_member
-        sql = "INSERT INTO channel_member (user_id, channel_id) VALUES (%s, %s)"
-        self.message_manager.cursor.execute(sql, (self.user_id, self.channel_id))
-        # Valider et enregistrer les modifications
-        self.message_manager.connection.commit()
-        # Déconnexion de la base de données
+        # Vérifier si l'utilisateur est déjà associé au canal
+        sql_check = "SELECT * FROM channel_member WHERE user_id = %s AND channel_id = %s"
+        self.message_manager.cursor.execute(sql_check, (self.user_id, self.channel_id))
+        row = self.message_manager.cursor.fetchone()
+        
+        if not row:
+            # L'utilisateur n'est pas encore associé au canal, alors effectuer l'insertion
+            sql_insert = "INSERT INTO channel_member (user_id, channel_id) VALUES (%s, %s)"
+            self.message_manager.cursor.execute(sql_insert, (self.user_id, self.channel_id))
+            # Valider et enregistrer les modifications
+            self.message_manager.connection.commit()
+
         self.message_manager.disconnect()
 
     def get_users_in_channel(self):
@@ -87,23 +92,27 @@ class ChatApp:
         self.user_list.config(state=tk.NORMAL)
         self.user_list.delete(1.0, tk.END)  # Effacer le contenu actuel
 
-        for name in users:
-            user_name = self.get_author_name(name)
+        for id in users:
+            user_name = self.get_author_name(id)  # Obtenir le nom de l'utilisateur
+            
             user_frame = tk.Frame(self.master)
             user_frame.pack()
             
-            label_id = tk.Label(user_frame, text=f"Nom: {name}")
+            label_name = tk.Label(user_frame, text=f"Nom: {user_name}")  # Afficher le nom de l'utilisateur
+            label_name.pack(side=tk.LEFT)
+            
+            label_id = tk.Label(user_frame, text=f"ID: {id}")
             label_id.pack(side=tk.LEFT)
             
-
             # Condition pour afficher le bouton de suppression uniquement si l'utilisateur est un administrateur
             if self.role == 'admin':
                 # Passer l'identifiant de l'utilisateur à supprimer à la fonction delete_user
-                delete_button = Button(user_frame, text="Supprimer", command=lambda user_id=name: self.delete_user(user_id))
+                delete_button = Button(user_frame, text="Supprimer", command=lambda user_id=id: self.delete_user(user_id))
                 delete_button.pack(side=tk.RIGHT)
                 self.delete_user_buttons.append(delete_button)
 
         self.user_list.config(state=tk.DISABLED)
+
 
 
 
