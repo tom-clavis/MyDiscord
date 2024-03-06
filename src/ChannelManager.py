@@ -11,6 +11,7 @@ class ChannelManager(ConnectionBD):
         super().__init__(host, user, password, database)
         self.master = master
         self.user_id = user_id
+        print("User ID:", self.user_id) 
 
     def show_channels(self):
         # Utilisez self.master pour référencer la fenêtre principale
@@ -24,12 +25,22 @@ class ChannelManager(ConnectionBD):
         # Lire les canaux depuis la base de données
         channels = self.read_channel()
         for channel in channels:
-            tree.insert("", "end", values=(channel[1], channel[2], channel[3]))
+            tree.insert("", "end", values=(channel[0], channel[1], channel[2]))  # Ajoutez l'ID du canal
         tree.pack(expand=True, fill="both")
+
+        # Lorsque l'utilisateur sélectionne un canal, affichez les messages et les utilisateurs correspondants
+        tree.bind("<Double-1>", self.open_channel)
+
+    def open_channel(self, event):
+        item = event.widget.selection()[0]  # Obtenir l'élément sélectionné dans l'arbre
+        channel_id = event.widget.item(item, "values")[0]  # Obtenir l'ID du canal sélectionné
+        # Afficher l'application de chat pour le canal sélectionné
+        chat_root = tk.Toplevel(self.master)
+        chat_app = ChatApp(chat_root, self.user_id, channel_id)
 
     def read_channel(self):
         self.connect()
-        sql = "SELECT * FROM channel "
+        sql = "SELECT id, name, type FROM channel "  # Sélectionnez également l'ID du canal
         self.cursor.execute(sql)
         channels = self.cursor.fetchall()
         self.disconnect()
@@ -48,8 +59,6 @@ if __name__ == "__main__":
     channel_manager.show_channels()
 
     root.mainloop()
-
-
     
 
 

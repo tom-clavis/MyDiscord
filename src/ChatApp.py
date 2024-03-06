@@ -26,22 +26,22 @@ class ChatApp:
         self.message_list.pack(expand=True, fill="both")
 
         # Zone de texte déroulante pour afficher les utilisateurs sur le canal
-        self.user_list = scrolledtext.ScrolledText(master, wrap=tk.WORD, state=tk.DISABLED)
+        self.user_list = scrolledtext.ScrolledText(self.master, wrap=tk.WORD, state=tk.DISABLED, width=40, height=10)
         self.user_list.pack(expand=True, fill="both")
 
         # Entrée pour taper un nouveau message
         self.message_entry = tk.Entry(master, width=50)
         self.message_entry.pack(pady=10)
-        
+
         # Bouton pour envoyer un message
         send_button = tk.Button(master, text="Send", command=self.send_message)
         send_button.pack()
-
+    
         # Afficher les messages initiaux
         self.display_messages()
         # Afficher les utilisateurs sur le canal
         self.display_users()
-
+        print("User ID:", self.user_id) 
     def get_author_name(self, author_id):
         self.message_manager.connect()
         sql = "SELECT first_name FROM user WHERE id = %s"
@@ -109,19 +109,20 @@ class ChatApp:
         self.message_list.config(state=tk.DISABLED)
 
     def send_message(self):
+        print("User ID:", self.user_id) 
         content = self.message_entry.get()  # Contenu du message saisi par l'utilisateur
-        self.message_manager.create_message(content, self.user_id, self.channel_id)
+        author_id = int(self.user_id)  # Convertir l'ID d'utilisateur en entier
+        self.message_manager.create_message(content, author_id, self.channel_id)
         # Actualiser les messages affichés
         self.messages = self.load_messages()
         self.display_messages()
-        # Actualiser la liste des utilisateurs sur le canal
-        self.display_users()
         self.message_entry.delete(0, tk.END)  # Effacer le champ de saisie après l'envoi
+
 
 if __name__ == "__main__":
     # Exemple d'utilisation de ChatApp avec ID utilisateur et ID de canal
     root = tk.Tk()
-    user_id = 49  # ID de l'utilisateur connecté
+    user_id = 43  # ID de l'utilisateur connecté
     channel_id = 1  # ID du canal auquel l'utilisateur est connecté
     chat_app = ChatApp(root, user_id, channel_id)
     root.mainloop()

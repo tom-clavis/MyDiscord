@@ -23,7 +23,7 @@ class UserManager(ConnectionBD):
 
     def read_user(self, email):
         self.connect()
-        sql = "SELECT user.first_name, user.last_name, user.email, user.password, IFNULL(role.nom, 'Aucun rôle') AS role_nom FROM user LEFT JOIN role ON user.id_user = role.id WHERE email = %s;"
+        sql = "SELECT user.id, user.first_name, user.last_name, user.email, user.password, IFNULL(role.nom, 'Aucun rôle') AS role_nom FROM user LEFT JOIN role ON user.id_user = role.id WHERE email = %s;"
         self.cursor.execute(sql, (email,))
         user = self.cursor.fetchone()
         self.disconnect()
@@ -42,7 +42,7 @@ class UserManager(ConnectionBD):
     def authenticate_user(self, email, password):
         user = self.read_user(email)
         if user:
-            hashed_password = user[3] 
+            hashed_password = user[4] 
             if bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8')):
                 return user
         return None

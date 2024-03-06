@@ -41,6 +41,7 @@ class LoginMenu():
             user = self.user_manager.authenticate_user(email, password)
 
             if user:
+                user_id = user[0]  # Récupérer l'ID de l'utilisateur
                 self.user_session = user
                 print("Bienvenue:", email)
                 messagebox.showinfo("Succès", "Connexion réussie pour l'email : {}".format(email))
@@ -48,7 +49,7 @@ class LoginMenu():
                 
                 # Créez une instance de ChannelManager et appelez sa méthode show_channels()
                 root_channel = tk.Tk()
-                channel_manager = ChannelManager(root_channel, host="localhost", user="root", password=mdp, database="MyDiscord", user_id=user[0])
+                channel_manager = ChannelManager(root_channel, host="localhost", user="root", password=mdp, database="MyDiscord", user_id=user_id)
                 channel_manager.show_channels()
 
                 root_channel.mainloop()
@@ -56,7 +57,6 @@ class LoginMenu():
                 messagebox.showerror("Erreur", "Email ou mot de passe invalide")
         except mysql.connector.Error as error:
             print("Erreur lors de la connexion à la base de données:", error)
-
     def check_session(self):
         if self.user_session:
             root_channel = tk.Tk()
