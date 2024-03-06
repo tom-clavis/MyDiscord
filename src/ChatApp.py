@@ -170,7 +170,6 @@ if __name__ == "__main__":
     root = tk.Tk()
     user_id = 43  # ID de l'utilisateur connecté
     channel_id = 1  # ID du canal auquel l'utilisateur est connecté
-    
     chat_app = ChatApp(root, user_id, channel_id)
     if chat_app.enter_private_channel():  # Vérifier l'accès au canal privé
         root.mainloop()
