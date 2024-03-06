@@ -41,15 +41,12 @@ class LoginMenu():
             user = self.user_manager.authenticate_user(email, password)
 
             if user:
-                user_id = user[0]  # Récupérer l'ID de l'utilisateur
                 self.user_session = user
-                print("Bienvenue:", email)
                 messagebox.showinfo("Succès", "Connexion réussie pour l'email : {}".format(email))
                 self.master.destroy()
-                
                 # Créez une instance de ChannelManager et appelez sa méthode show_channels()
                 root_channel = tk.Tk()
-                channel_manager = ChannelManager(root_channel, host="localhost", user="root", password=mdp, database="MyDiscord", user_id=user_id)
+                channel_manager = ChannelManager(root_channel, host="localhost", user="root", password=mdp, database="MyDiscord", user_id=user[0], role=user[5])
                 channel_manager.show_channels()
 
                 root_channel.mainloop()
