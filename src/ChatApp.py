@@ -42,6 +42,9 @@ class ChatApp:
         send_button = tk.Button(master, text="Send", command=self.send_message)
         send_button.pack()
 
+        # Actualiser les messages chaque seconde
+        self.master.after(1000, self.refresh_messages)
+
         # Afficher les messages initiaux
         self.display_messages()
 
@@ -163,6 +166,15 @@ class ChatApp:
         self.messages = self.load_messages()
         self.display_messages()
         self.message_entry.delete(0, tk.END)  # Effacer le champ de saisie après l'envoi
+
+    def refresh_messages(self):
+        new_messages = self.load_messages()
+        if new_messages != self.messages:
+            self.messages = new_messages
+            self.display_messages()
+
+        # Programmer une nouvelle actualisation dans une seconde
+        self.master.after(1000, self.refresh_messages)
 
 
 if __name__ == "__main__":
