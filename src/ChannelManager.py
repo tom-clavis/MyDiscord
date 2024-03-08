@@ -3,6 +3,7 @@ from tkinter import ttk, messagebox, simpledialog
 import os
 from ConnectionBD import ConnectionBD
 from ChatApp import ChatApp
+import bcrypt
 
 mdp = os.getenv("mdp")
 
@@ -61,14 +62,16 @@ class ChannelManager(ConnectionBD):
         if channel_visibility == "private":
             password = simpledialog.askstring("Créer un canal", "Mot de passe du canal (laissez vide pour aucun mot de passe):", show='*')
 
+        # Hash le mot de passe avec Bcrypt 
+        hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
         try:
             self.connect()
             sql = "INSERT INTO channel (name, type, channel_type, password) VALUES (%s, %s, %s, %s)"
-            self.cursor.execute(sql, (channel_name, channel_type, channel_visibility, password))  # Ajout de la variable password à la requête SQL
+            self.cursor.execute(sql, (channel_name, channel_type, channel_visibility, hashed_password))  # Stockage du mot de passe haché
             self.connection.commit()
             self.disconnect()
             messagebox.showinfo("Succès", f"Canal '{channel_name}' créé avec succès.")
-            self.refresh_channels()  # Rafraîchir la liste des canaux après la création du canal
+            self.refresh_channels()
         except Exception as e:
             messagebox.showerror("Erreur", f"Erreur lors de la création du canal : {str(e)}")
 
@@ -103,10 +106,11 @@ class ChannelManager(ConnectionBD):
         self.connect()
         sql = "SELECT password FROM channel WHERE id = %s"
         self.cursor.execute(sql, (channel_id,))
-        correct_password = self.cursor.fetchone()[0]
+        correct_password_hash = self.cursor.fetchone()[0]
         self.disconnect()
-        # Comparer le mot de passe entré par l'utilisateur avec le mot de passe stocké dans la base de données
-        return password == correct_password
+        
+        # Vérifier le mot de passe en comparant le hachage stocké avec le hachage du mot de passe fourni
+        return bcrypt.checkpw(password.encode(), correct_password_hash.encode())
 
     def read_channel(self):
         self.connect()

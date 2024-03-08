@@ -1,3 +1,5 @@
+import sys
+sys.path.append('src')
 import tkinter as tk
 from UserManager import UserManager
 from RegisterMenu import RegisterMenu
@@ -5,6 +7,7 @@ from tkinter import messagebox
 import mysql.connector
 import os
 from ChannelManager import ChannelManager
+
 
 mdp = os.getenv("mdp")
 
